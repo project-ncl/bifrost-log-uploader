@@ -17,7 +17,6 @@
  */
 package org.jboss.pnc.bifrost.upload;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,16 +56,28 @@ public class ChecksumComputingStream extends FilterInputStream {
     }
 
     public String getMD5Sum() {
-        return DatatypeConverter.printHexBinary(md5.digest());
+        return format(md5.digest());
     }
 
     public String getSHA512Sum() {
-        return DatatypeConverter.printHexBinary(sha512.digest());
+        return format(sha512.digest());
     }
 
     public void readFully() throws IOException {
         while (true) {
             if (read() == -1) break;
         }
+    }
+
+    private static String format(byte[] digest) {
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : digest) {
+            String hex = Integer.toHexString(0xFF & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 }
