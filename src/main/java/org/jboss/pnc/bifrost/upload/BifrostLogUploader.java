@@ -73,21 +73,19 @@ public class BifrostLogUploader {
      */
     public void uploadFile(File logfile, LogMetadata metadata) throws BifrostUploadException {
         String md5Sum;
-        String sha512Sum;
         try (ChecksumComputingStream checksums = ChecksumComputingStream.computeChecksums(Files.newInputStream(logfile.toPath()))) {
             md5Sum = checksums.getMD5Sum();
-            sha512Sum = checksums.getSHA512Sum();
         } catch (IOException e) {
             throw new BifrostUploadException("Could not compute file checksums.", e);
         }
-        uploadFile(logfile, metadata, md5Sum, sha512Sum);
+        uploadFile(logfile, metadata, md5Sum);
     }
 
     /**
      * Uploads log file to Bifrost, using the provided checksums.
      */
-    public void uploadFile(File logfile, LogMetadata metadata, String md5sum, String sha512sum) throws BifrostUploadException {
-        MultipartEntityBuilder multipartEntityBuilder = prepareMetadata(metadata, md5sum, sha512sum);
+    public void uploadFile(File logfile, LogMetadata metadata, String md5sum) throws BifrostUploadException {
+        MultipartEntityBuilder multipartEntityBuilder = prepareMetadata(metadata, md5sum);
         HttpEntity formDataEntity = multipartEntityBuilder.addPart("logfile", new FileBody(logfile)).build();
         List<Header> headers = prepareHeaders(metadata);
         upload(formDataEntity, headers);
@@ -101,18 +99,17 @@ public class BifrostLogUploader {
         String sha512Sum;
         try (ChecksumComputingStream checksums = ChecksumComputingStream.computeChecksums(new ByteArrayInputStream(log.getBytes(StandardCharsets.UTF_8)))) {
             md5Sum = checksums.getMD5Sum();
-            sha512Sum = checksums.getSHA512Sum();
         } catch (IOException e) {
             throw new BifrostUploadException("Could not compute file checksums.", e);
         }
-        uploadString(log, metadata, md5Sum, sha512Sum);
+        uploadString(log, metadata, md5Sum);
     }
 
     /**
      * Uploads log from string to Bifrost, using the provided checksums.
      */
-    public void uploadString(String log, LogMetadata metadata, String md5sum, String sha512sum) throws BifrostUploadException {
-        MultipartEntityBuilder multipartEntityBuilder = prepareMetadata(metadata, md5sum, sha512sum);
+    public void uploadString(String log, LogMetadata metadata, String md5sum) throws BifrostUploadException {
+        MultipartEntityBuilder multipartEntityBuilder = prepareMetadata(metadata, md5sum);
 
         HttpEntity formDataEntity = multipartEntityBuilder.addPart("logfile", new StringBody(log, PLAIN_UTF8_CONTENT_TYPE)).build();
         List<Header> headers = prepareHeaders(metadata);
@@ -146,10 +143,9 @@ public class BifrostLogUploader {
         return headers;
     }
 
-    private static MultipartEntityBuilder prepareMetadata(LogMetadata metadata, String md5sum, String sha512sum) {
+    private static MultipartEntityBuilder prepareMetadata(LogMetadata metadata, String md5sum) {
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
                 .addPart("md5sum", new StringBody(md5sum, PLAIN_UTF8_CONTENT_TYPE))
-                .addPart("sha512sum", new StringBody(sha512sum, PLAIN_UTF8_CONTENT_TYPE))
                 .addPart("endTime", new StringBody(metadata.getEndTime().toString(), PLAIN_UTF8_CONTENT_TYPE))
                 .addPart("loggerName", new StringBody(metadata.getLoggerName(), PLAIN_UTF8_CONTENT_TYPE))
                 .addPart("tag", new StringBody(metadata.getTag(), PLAIN_UTF8_CONTENT_TYPE));

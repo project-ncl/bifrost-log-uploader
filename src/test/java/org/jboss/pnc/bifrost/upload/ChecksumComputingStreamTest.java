@@ -33,17 +33,14 @@ class ChecksumComputingStreamTest {
         String message = "My message";
 
         String md5SumExpected = "be59f66a07d05b2c52a1387d1f62d753";
-        String sha512SumExpected = "4ad19663eb6877501dce4efc91f3051487b7b02fbbf61656ccb56ae877c005607dbc08c473bbcfbed1f9755644e5e1af4e316b79a0df605f1f7f323597734998";
 
         String md5Sum;
         String sha512Sum;
         try (ChecksumComputingStream checksums = ChecksumComputingStream.computeChecksums(new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)))) {
             md5Sum = checksums.getMD5Sum();
-            sha512Sum = checksums.getSHA512Sum();
         }
 
         assertEquals(md5SumExpected, md5Sum.toLowerCase());
-        assertEquals(sha512SumExpected, sha512Sum.toLowerCase());
     }
 
 

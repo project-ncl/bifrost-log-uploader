@@ -27,26 +27,21 @@ import java.security.NoSuchAlgorithmException;
 public class ChecksumComputingStream extends FilterInputStream {
 
     private final MessageDigest md5;
-    private final MessageDigest sha512;
 
-    private ChecksumComputingStream(InputStream stream, MessageDigest md5, MessageDigest sha512) {
+    private ChecksumComputingStream(InputStream stream, MessageDigest md5) {
         super(stream);
         this.md5 = md5;
-        this.sha512 = sha512;
     }
 
     public static ChecksumComputingStream of(InputStream is) {
         MessageDigest md5;
-        MessageDigest sha512;
         try {
             md5 = MessageDigest.getInstance("MD5");
-            sha512 = MessageDigest.getInstance("SHA-512");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
         DigestInputStream md5dis = new DigestInputStream(is, md5);
-        DigestInputStream sha512dis = new DigestInputStream(md5dis, sha512);
-        return new ChecksumComputingStream(sha512dis, md5, sha512);
+        return new ChecksumComputingStream(md5dis, md5);
     }
 
     public static ChecksumComputingStream computeChecksums(InputStream is) throws IOException {
@@ -57,10 +52,6 @@ public class ChecksumComputingStream extends FilterInputStream {
 
     public String getMD5Sum() {
         return format(md5.digest());
-    }
-
-    public String getSHA512Sum() {
-        return format(sha512.digest());
     }
 
     public void readFully() throws IOException {
