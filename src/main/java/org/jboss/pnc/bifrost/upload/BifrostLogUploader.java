@@ -43,10 +43,10 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class BifrostLogUploader {
-    private static final String HEADER_PROCESS_CONTEXT = "log-process-context";
-    private static final String HEADER_PROCESS_CONTEXT_VARIANT = "process-context-variant";
-    private static final String HEADER_TMP = "log-tmp";
-    private static final String HEADER_REQUEST_CONTEXT = "log-request-context";
+    public static final String HEADER_PROCESS_CONTEXT = "log-process-context";
+    public static final String HEADER_PROCESS_CONTEXT_VARIANT = "process-context-variant";
+    public static final String HEADER_TMP = "log-tmp";
+    public static final String HEADER_REQUEST_CONTEXT = "log-request-context";
     public static final String HEADER_AUTHORIZATION = "Authorization";
 
     private final URI bifrostUrl;
@@ -134,11 +134,7 @@ public class BifrostLogUploader {
 
     private List<Header> prepareHeaders(LogMetadata metadata) {
         List<Header> headers = new ArrayList<>();
-
-        headers.add(new BasicHeader(HEADER_PROCESS_CONTEXT, metadata.getProcessContext()));
-        headers.add(new BasicHeader(HEADER_PROCESS_CONTEXT_VARIANT, metadata.getProcessContextVariant()));
-        headers.add(new BasicHeader(HEADER_TMP, metadata.getTmp()));
-        headers.add(new BasicHeader(HEADER_REQUEST_CONTEXT, metadata.getRequestContext()));
+        metadata.getHeaders().forEach((k, v) -> headers.add(new BasicHeader(k, v)));
         headers.add(new BasicHeader(HEADER_AUTHORIZATION, "Bearer " + tokenProvider.get()));
         return headers;
     }
