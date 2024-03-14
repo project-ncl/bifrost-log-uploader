@@ -19,8 +19,16 @@ package org.jboss.pnc.bifrost.upload;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.jboss.pnc.bifrost.upload.BifrostLogUploader.HEADER_PROCESS_CONTEXT;
+import static org.jboss.pnc.bifrost.upload.BifrostLogUploader.HEADER_PROCESS_CONTEXT_VARIANT;
+import static org.jboss.pnc.bifrost.upload.BifrostLogUploader.HEADER_REQUEST_CONTEXT;
+import static org.jboss.pnc.bifrost.upload.BifrostLogUploader.HEADER_TMP;
 
 @Data
 @Builder
@@ -29,8 +37,47 @@ public class LogMetadata {
     private String loggerName;
     private String tag;
 
-    private String processContext;
-    private String processContextVariant;
-    private String tmp;
-    private String requestContext;
+    @NonNull
+    private Map<String, String> headers = new HashMap<>();
+
+    public void setProcessContext(String processContext) {
+        headers.put(HEADER_PROCESS_CONTEXT, processContext);
+    }
+
+    public void setProcessContextVariant(String processContextVariant) {
+        headers.put(HEADER_PROCESS_CONTEXT_VARIANT, processContextVariant);
+    }
+
+    public void setTmp(String tmp) {
+        headers.put(HEADER_TMP, tmp);
+    }
+
+    public void setRequestContext(String requestContext) {
+        headers.put(HEADER_REQUEST_CONTEXT, requestContext);
+    }
+
+    public static class LogMetadataBuilder {
+        private Map<String, String> headers = new HashMap<>();
+
+        public LogMetadataBuilder processContext(String processContext) {
+            headers.put(HEADER_PROCESS_CONTEXT, processContext);
+            return this;
+        }
+
+        public LogMetadataBuilder processContextVariant(String processContextVariant) {
+            headers.put(HEADER_PROCESS_CONTEXT_VARIANT, processContextVariant);
+            return this;
+        }
+
+        public LogMetadataBuilder tmp(String tmp) {
+            headers.put(HEADER_TMP, tmp);
+            return this;
+        }
+
+        public LogMetadataBuilder requestContext(String requestContext) {
+            headers.put(HEADER_REQUEST_CONTEXT, requestContext);
+            return this;
+        }
+
+    }
 }
