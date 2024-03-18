@@ -56,6 +56,10 @@ public class LogMetadata {
         headers.put(HEADER_REQUEST_CONTEXT, requestContext);
     }
 
+    public void setTag(TagOption tagOption) {
+        tag = tagOption.getTagName();
+    }
+
     public static class LogMetadataBuilder {
         private Map<String, String> headers = new HashMap<>();
 
@@ -79,5 +83,9 @@ public class LogMetadata {
             return this;
         }
 
+        public LogMetadataBuilder tag(TagOption tagOption) {
+            tag = tagOption.getTagName();
+            return this;
+        }
     }
 }
