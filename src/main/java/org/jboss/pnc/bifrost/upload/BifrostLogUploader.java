@@ -144,7 +144,7 @@ public class BifrostLogUploader {
                 .addPart("md5sum", new StringBody(md5sum, PLAIN_UTF8_CONTENT_TYPE))
                 .addPart("endTime", new StringBody(metadata.getEndTime().toString(), PLAIN_UTF8_CONTENT_TYPE))
                 .addPart("loggerName", new StringBody(metadata.getLoggerName(), PLAIN_UTF8_CONTENT_TYPE))
-                .addPart("tag", new StringBody(metadata.getTag(), PLAIN_UTF8_CONTENT_TYPE));
+                .addPart("tag", new StringBody(metadata.getTag().getTag(), PLAIN_UTF8_CONTENT_TYPE));
         return multipartEntityBuilder;
     }
 

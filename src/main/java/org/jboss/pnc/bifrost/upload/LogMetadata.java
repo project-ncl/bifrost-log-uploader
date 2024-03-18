@@ -35,7 +35,7 @@ import static org.jboss.pnc.bifrost.upload.BifrostLogUploader.HEADER_TMP;
 public class LogMetadata {
     private OffsetDateTime endTime;
     private String loggerName;
-    private String tag;
+    private BifrostTag tag;
 
     @NonNull
     private Map<String, String> headers = new HashMap<>();
