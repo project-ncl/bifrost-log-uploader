@@ -97,7 +97,6 @@ public class BifrostLogUploader {
      */
     public void uploadString(String log, LogMetadata metadata) throws BifrostUploadException {
         String md5Sum;
-        String sha512Sum;
         try (ChecksumComputingStream checksums = ChecksumComputingStream.computeChecksums(new ByteArrayInputStream(log.getBytes(StandardCharsets.UTF_8)))) {
             md5Sum = checksums.getMD5Sum();
         } catch (IOException e) {
