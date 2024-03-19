@@ -17,6 +17,7 @@
  */
 package org.jboss.pnc.bifrost.upload;
 
+import org.apache.hc.client5.http.entity.GzipCompressingEntity;
 import org.apache.hc.client5.http.entity.mime.FileBody;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.client5.http.entity.mime.StringBody;
@@ -117,7 +118,8 @@ public class BifrostLogUploader {
     }
 
     private void upload(HttpEntity formDataEntity, List<Header> headers) {
-        ClassicHttpRequest request = prepareRequest(formDataEntity, headers);
+        GzipCompressingEntity gzipped = new GzipCompressingEntity(formDataEntity);
+        ClassicHttpRequest request = prepareRequest(gzipped, headers);
 
         try (CloseableHttpClient httpclient = HttpClientBuilder.create().setRetryStrategy(retryStrategy).build()) {
             httpclient.execute(request, BifrostLogUploader::handleResponse);
