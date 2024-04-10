@@ -64,7 +64,7 @@ public class BifrostLogUploader {
      * @param delaySeconds Number of seconds to increase the waing time each retry. For example 10 means waiting times 10, 20, 30, 40, ...
      */
     public BifrostLogUploader(URI bifrostUrl, int maxRetries, int delaySeconds, Supplier<String> tokenProvider) {
-        this.bifrostUrl = bifrostUrl.resolve("/upload/final-log");
+        this.bifrostUrl = bifrostUrl.resolve("/final-log/upload");
         this.tokenProvider = tokenProvider;
         this.retryStrategy = new BifrostHttpRequestRetryStrategy(maxRetries, delaySeconds);
     }
