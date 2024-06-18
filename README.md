@@ -1,3 +1,4 @@
+test me
 # bifrost-log-uploader
 Log uploader for Bifrost
 
